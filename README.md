@@ -337,6 +337,8 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [Google] Types with Shorthand Names. Arrays, dictionaries, and optional types are written in their shorthand form whenever possible; that is, [Element], [Key: Value], and Wrapped?. The long forms Array<Element>, Dictionary<Key, Value>, and Optional<Wrapped> are only written when required by the compiler; for example, the Swift parser requires Array<Element>.Index and does not accept [Element].Index.
+
 * <a id='omit-self'></a>(<a href='#omit-self'>link</a>) **Don't use `self` unless it's necessary for disambiguation or required by the language.** [![SwiftFormat: redundantSelf](https://img.shields.io/badge/SwiftFormat-redundantSelf-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#redundantSelf)
 
   <details>
@@ -844,7 +846,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
   <details>
 
   ```swift
-  //WRONG
+  // WRONG
   class MyClass {
 
     func request(completion: () -> Void) {
@@ -926,6 +928,18 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
  </details>
 
+* [Google] for-where Loops. When the entirety of a for loop’s body would be a single if block testing a condition of the element, the test is placed in the where clause of the for statement instead.
+ 
+ <details>
+ 
+ ```swift
+ for item in collection where item.hasProperty {
+     // ...
+ }
+ ```
+ 
+ </details>
+
 * [L] Often, we can run into a situation in which we need to unwrap multiple optionals using guard statements. In general, combine unwraps into a single guard statement if handling the failure of each unwrap is identical (e.g. just a return, break, continue, throw, or some other @noescape).
 
  <details>
@@ -980,6 +994,11 @@ _You can enable the following settings in Xcode by running [this script](resourc
   </details>
 
 * <a id='limit-access-control'></a>(<a href='#limit-access-control'>link</a>) **Access control should be at the strictest level possible.** Prefer `public` to `open` and `private` to `fileprivate` unless you need that behavior.
+
+* [Google] Access Levels
+ Omitting an explicit access level is permitted on declarations. For top-level declarations, the default access level is internal. For nested declarations, the default access level is the lesser of internal and the access level of the enclosing declaration.
+
+ Specifying an explicit access level at the file level on an extension is forbidden. Each member of the extension has its access level specified if it is different than the default.
 
 * <a id='avoid-global-functions'></a>(<a href='#avoid-global-functions'>link</a>) **Avoid global functions whenever possible.** Prefer methods within type definitions.
 
@@ -1154,6 +1173,10 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+  
+* [Google] fallthrough in switch Statements. When multiple cases of a switch would execute the same statements, the case patterns are combined into ranges or comma-delimited lists. Multiple case statements that do nothing but fallthrough to a case below are not allowed.
+
+* [Google] 
 
 * <a id='semantic-optionals'></a>(<a href='#semantic-optionals'>link</a>) **Use optionals only when they have semantic meaning.**
 
@@ -1446,7 +1469,7 @@ In general, if a method can "fail", and the reason for the failure is not immedi
 
   import Foundation
 
-  //RIGHT
+  // RIGHT
 
   //  Copyright © 2018 Airbnb. All rights reserved.
   //
@@ -1494,6 +1517,113 @@ In general, if a method can "fail", and the reason for the failure is not immedi
 
 * <a id='newline-at-eof'></a>(<a href='#newline-at-eof'>link</a>) **Files should end in a newline.** [![SwiftLint: trailing_newline](https://img.shields.io/badge/SwiftLint-trailing__newline-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#trailing-newline)
 
+* [Google] When deciding on the logical order of members, it can be helpful for readers and future writers (including yourself) to use // MARK: comments to provide descriptions for that grouping. These comments are also interpreted by Xcode and provide bookmarks in the source window’s navigation bar. (Likewise, // MARK: - , written with a hyphen before the description, causes Xcode to insert a divider before the menu item.) 
+
+ <details>
+
+ ```swift
+ class MovieRatingViewController: UITableViewController {
+
+    // MARK: - View controller lifecycle methods
+ 
+    override func viewDidLoad() {
+        // ...
+    }
+ 
+    override func viewWillAppear(_ animated: Bool) {
+        // ...
+    }
+ 
+    // MARK: - Movie rating manipulation methods
+ 
+    @objc private func ratingStarWasTapped(_ sender: UIButton?) {
+        // ...
+    }
+ 
+    @objc private func criticReviewWasTapped(_ sender: UIButton?) {
+        // ...
+    }
+ }
+ ```
+
+</details>
+
+* [Google] Extensions can be used to organize functionality of a type across multiple “units.” As with member order, the organizational structure/grouping you choose can have a great effect on readability; you must use some logical organizational structure that you could explain to a reviewer if asked.
+
+* [Google] Line-Wrapping. (Large chapter in https://google.github.io/swift/)
+
+ <details>
+ 
+ * If the entire declaration, statement, or expression fits on one line, then do that.
+ * Comma-delimited lists are only laid out in one direction: horizontally or vertically. In other words, all elements must fit on the same line, or each element must be on its own line. A horizontally-oriented list does not contain any line breaks, even before the first element or after the last element. Except in control flow statements, a vertically-oriented list contains a line break before the first element and after each element.
+ * A continuation line starting with an unbreakable token sequence is indented at the same level as the original line.
+ * A continuation line that is part of a vertically-oriented comma-delimited list is indented exactly +2 from the original line.
+ * When an open curly brace ({) follows a line-wrapped declaration or expression, it is on the same line as the final continuation line unless that line is indented at +2 from the original line. In that case, the brace is placed on its own line, to avoid the continuation lines from blending visually with the body of the subsequent block.
+
+ ```swift
+ // WRONG
+ public func index<Elements: Collection, Element>(
+     of element: Element,
+     in collection: Elements
+ ) -> Elements.Index?
+ where
+     Elements.Element == Element,
+     Element: Equatable {  // AVOID.
+     for current in elements {
+         // ...
+     }
+ }
+ // RIGHT
+ public func index<Elements: Collection, Element>(
+     of element: Element,
+     in collection: Elements
+ ) -> Elements.Index?
+ where
+     Elements.Element == Element,
+     Element: Equatable
+ {  // GOOD.
+     for current in elements {
+         // ...
+     }
+ }
+ ```
+ 
+ For declarations that contain a where clause followed by generic constraints, additional rules apply:
+ 
+ * If the generic constraint list exceeds the column limit when placed on the same line as the return type, then a line break is first inserted before the where keyword and the where keyword is indented at the same level as the original line.
+ * If the generic constraint list still exceeds the column limit after inserting the line break above, then the constraint list is oriented vertically with a line break after the where keyword and a line break after the final constraint.
+ 
+ This line-wrapping style ensures that the different parts of a declaration are quickly and easily identifiable to the reader by using indentation and line breaks, while also preserving the same indentation level for those parts throughout the file. 
+ 
+ * Control Flow Statements
+ 
+   When a control flow statement (such as if, guard, while, or for) is wrapped, the first continuation line is indented to the same position as the token following the control flow keyword. Additional continuation lines are indented at that same position if they are syntactically parallel elements, or in +2 increments from that position if they are syntactically nested.
+ 
+   The open brace ({) preceding the body of the control flow statement can either be placed on the same line as the last continuation line or on the next line, at the same indentation level as the beginning of the statement. For guard statements, the else { must be kept together, either on the same line or on the next line.
+ 
+ ```swift
+ if aBooleanValueReturnedByAVeryLongOptionalThing() &&
+    aDifferentBooleanValueReturnedByAVeryLongOptionalThing() &&
+    yetAnotherBooleanValueThatContributesToTheWrapping() {
+    doSomething()
+ }
+ 
+ guard let value = aValueReturnedByAVeryLongOptionalThing(),
+       let value2 = aDifferentValueReturnedByAVeryLongOptionalThing() else {
+     doSomething()
+ }
+ ```
+ 
+ </details>
+ 
+ * [Google] Horizontal whitespace
+ 
+ <details>
+ 
+ A large chapter in https://google.github.io/swift/
+ 
+ </details>
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Objective-C Interoperability
@@ -1538,6 +1668,8 @@ In general, if a method can "fail", and the reason for the failure is not immedi
 * Do not use targets for parameters (e.g. base URL) configuration. You can use configurations instead.
 
 * Do not use forks from your personal account. If you need to create a fork use company's account and explain your desicion in readme.md.
+
+* [Google] Code should compile without warnings when feasible. Any warnings that are able to be removed easily by the author must be removed. A reasonable exception is deprecation warnings, where it may not be possible to immediately migrate to the replacement API, or where an API may be deprecated for external users but must still be supported inside a library during a deprecation period.
 
 ## Contributors
 
