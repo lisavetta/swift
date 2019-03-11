@@ -1338,6 +1338,17 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [Github] Prefer structs over classes.
+
+ <details>
+ Unless you require functionality that can only be provided by a class (like identity or deinitializers), implement a struct instead.
+
+ Note that inheritance is (by itself) usually not a good reason to use classes, because polymorphism can be provided by protocols, and implementation reuse can be provided through composition.
+
+ Rationale: Value types are simpler, easier to reason about, and behave as expected with the let keyword.
+
+ </details>
+
 **[⬆ back to top](#table-of-contents)**
 
 
