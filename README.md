@@ -52,6 +52,12 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * <a id='trailing-whitespace'></a>(<a href='#trailing-whitespace'>link</a>) **Trim trailing whitespace in all lines.** [![SwiftFormat: trailingSpace](https://img.shields.io/badge/SwiftFormat-trailingSpace-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#trailingSpace)
 
+* [L] Do not place opening braces on new lines
+
+* [L] When using // MARK: - whatever, leave a newline after the comment.
+
+* [L] Always leave a space after //.
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Naming
@@ -268,6 +274,36 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L] As per Apple's API Design Guidelines, a protocol should be named as nouns if they describe what something is doing (e.g. Collection) and using the suffixes able, ible, or ing if it describes a capability (e.g. Equatable, ProgressReporting). If neither of those options makes sense for your use case, you can add a Protocol suffix to the protocol's name as well. Some example protocols are below.
+
+ <details>
+
+ ```swift
+ // here, the name is a noun that describes what the protocol does
+ protocol TableViewSectionProvider {
+ func rowHeight(at row: Int) -> CGFloat
+     var numberOfRows: Int { get }
+     /* ... */
+ }
+
+ // here, the protocol is a capability, and we name it appropriately
+ protocol Loggable {
+ func logCurrentState()
+     /* ... */
+ }
+
+ // suppose we have an `InputTextView` class, but we also want a protocol
+ // to generalize some of the functionality - it might be appropriate to
+ // use the `Protocol` suffix here
+ protocol InputTextViewProtocol {
+    func sendTrackingEvent()
+    func inputText() -> String
+    /* ... */
+ }
+ ```
+
+</details>
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Style
@@ -338,6 +374,29 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+
+* [L] Prefer using local constants or other mitigation techniques to avoid multi-line predicates where possible.
+
+<details>
+
+ ```swift
+ // WRONG
+ if x == firstReallyReallyLongPredicateFunction()
+     && y == secondReallyReallyLongPredicateFunction()
+     && z == thirdReallyReallyLongPredicateFunction() {
+     // do something
+ }
+
+ // RIGHT
+ let firstCondition = x == firstReallyReallyLongPredicateFunction()
+ let secondCondition = y == secondReallyReallyLongPredicateFunction()
+ let thirdCondition = z == thirdReallyReallyLongPredicateFunction()
+ if firstCondition && secondCondition && thirdCondition {
+     // do something
+ }
+ ```
+
+ </details>
 
 * <a id='trailing-comma-array'></a>(<a href='#trailing-comma-array'>link</a>) **Add a trailing comma on the last element of a multi-line array.** [![SwiftFormat: trailingCommas](https://img.shields.io/badge/SwiftFormat-trailingCommas-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#trailingCommas)
 
@@ -551,6 +610,19 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L] When calling a function that has many parameters, put each argument on a separate line with a single extra indentation.
+
+ <details>
+
+ ```swift
+ someFunctionWithManyArguments(
+     firstArgument: "Hello, I am a string",
+     secondArgument: resultFromSomeFunction(),
+     thirdArgument: someOtherLocalProperty)
+ ```
+
+ </details>
+
 ### Closures
 
 * <a id='favor-void-closure-return'></a>(<a href='#favor-void-closure-return'>link</a>) **Favor `Void` return types over `()` in closure declarations.** If you must specify a `Void` return type in a function declaration, use `Void` rather than `()` to improve readability. [![SwiftLint: void_return](https://img.shields.io/badge/SwiftLint-void__return-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#void-return)
@@ -607,6 +679,47 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L] If the types of the parameters are obvious, it is OK to omit the type name, but being explicit is also OK. Sometimes readability is enhanced by adding clarifying detail and sometimes by taking repetitive parts away - use your best judgment and be consistent.
+
+ <details>
+
+ ```swift
+ // omitting the type
+ doSomethingWithClosure() { response in
+     print(response)
+ }
+ 
+ // explicit type
+ doSomethingWithClosure() { response: NSURLResponse in
+     print(response)
+ }
+ 
+ // using shorthand in a map statement
+ [1, 2, 3].flatMap { String($0) }
+ ```
+ 
+ </details>
+
+* [L] Use trailing closure syntax unless the meaning of the closure is not obvious without the parameter name (an example of this could be if a method has parameters for success and failure closures).
+
+ <details>
+
+ ```swift
+ // trailing closure
+ doSomething(1.0) { (parameter1) in
+     print("Parameter 1 is \(parameter1)")
+ }
+
+ // no trailing closure
+ doSomething(1.0, success: { (parameter1) in
+     print("Success with \(parameter1)")
+ }, failure: { (parameter1) in
+     print("Failure with \(parameter1)")
+ })
+ ```
+
+ </details>
+
 ### Operators
 
 * <a id='infix-operator-spacing'></a>(<a href='#infix-operator-spacing'>link</a>) **Infix operators should have a single space on either side.** Prefer parenthesis to visually group statements with many operators rather than varying widths of whitespace. This rule does not apply to range operators (e.g. `1...3`) and postfix or prefix operators (e.g. `guest?` or `-1`). [![SwiftLint: operator_usage_whitespace](https://img.shields.io/badge/SwiftLint-operator__usage__whitespace-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#operator-usage-whitespace)
@@ -634,6 +747,14 @@ _You can enable the following settings in Xcode by running [this script](resourc
 **[⬆ back to top](#table-of-contents)**
 
 ## Patterns
+
+* [L] The only time you should be using implicitly unwrapped optionals is with @IBOutlets. In every other case, it is better to use a non-optional or regular optional property. Yes, there are cases in which you can probably "guarantee" that the property will never be nil when used, but it is better to be safe and consistent. Similarly, don't use force unwraps.
+
+* [L] Don't use as! or try!.
+
+* [L] Don't use unowned. You can think of unowned as somewhat of an equivalent of a weak property that is implicitly unwrapped (though unowned has slight performance improvements on account of completely ignoring reference counting). Since we don't ever want to have implicit unwraps, we similarly don't want unowned properties.
+
+* [L] When unwrapping optionals, use the same name for the unwrapped constant or variable where appropriate.
 
 * <a id='implicitly-unwrapped-optionals'></a>(<a href='#implicitly-unwrapped-optionals'>link</a>) **Prefer initializing properties at `init` time whenever possible, rather than using implicitly unwrapped optionals.**  A notable exception is UIViewController's `view` property. [![SwiftLint: implicitly_unwrapped_optional](https://img.shields.io/badge/SwiftLint-implicitly__unwrapped__optional-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#implicitly-unwrapped-optional)
 
@@ -702,6 +823,21 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+  
+* [L] If making a read-only, computed property, provide the getter without the get {} around it.
+
+ <details>
+
+ ```swift
+ var computedProperty: String {
+     if someBool {
+         return "I'm a mighty pirate!"
+     }
+     return "I'm selling these fine leather jackets."
+ }
+ ```
+
+ </details>
 
 * <a id='complex-callback-block'></a>(<a href='#complex-callback-block'>link</a>) **Extract complex callback blocks into methods**. This limits the complexity introduced by weak-self in blocks and reduces nestedness. If you need to reference self in the method call, make use of `guard` to unwrap self for the duration of the callback.
 
@@ -739,6 +875,100 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+
+* [L] In general, we prefer to use an "early return" strategy where applicable as opposed to nesting code in if statements. Using guard statements for this use-case is often helpful and can improve the readability of the code.
+
+* [L] When unwrapping optionals, prefer guard statements as opposed to if statements to decrease the amount of nested indentation in your code.
+
+* [L] When deciding between using an if statement or a guard statement when unwrapping optionals is not involved, the most important thing to keep in mind is the readability of the code. There are many possible cases here, such as depending on two different booleans, a complicated logical statement involving multiple comparisons, etc., so in general, use your best judgement to write code that is readable and consistent. If you are unsure whether guard or if is more readable or they seem equally readable, prefer using guard.
+
+ <details>
+
+ ```swift
+ // an `if` statement is readable here
+ if operationFailed {
+     return
+ }
+ 
+ // a `guard` statement is readable here
+ guard isSuccessful else {
+     return
+ }
+ 
+ // double negative logic like this can get hard to read - i.e. don't do this
+ guard !operationFailed else {
+     return
+ }
+ ```
+
+ </details>
+
+* [L] If choosing between two different states, it makes more sense to use an if statement as opposed to a guard statement.
+
+ <details>
+
+ ```swift
+ // WRONG
+ guard isFriendly else {
+     print("You have the manners of a beggar.")
+     return
+ }
+
+ print("Hello, nice to meet you!")
+ 
+ // RIGHT
+ if isFriendly {
+     print("Hello, nice to meet you!")
+ } else {
+     print("You have the manners of a beggar.")
+ }
+ ```
+
+ </details>
+
+* [L] Often, we can run into a situation in which we need to unwrap multiple optionals using guard statements. In general, combine unwraps into a single guard statement if handling the failure of each unwrap is identical (e.g. just a return, break, continue, throw, or some other @noescape).
+
+ <details>
+
+ ```swift
+ // combined because we just return
+ guard let thingOne = thingOne,
+     let thingTwo = thingTwo,
+     let thingThree = thingThree else {
+     return
+ }
+
+ // separate statements because we handle a specific error in each case
+ guard let thingOne = thingOne else {
+     throw Error(message: "Unwrapping thingOne failed.")
+ }
+
+ guard let thingTwo = thingTwo else {
+     throw Error(message: "Unwrapping thingTwo failed.")
+ }
+
+ guard let thingThree = thingThree else {
+     throw Error(message: "Unwrapping thingThree failed.")
+ }
+ ```
+
+ </details>
+
+* [L] Don’t use one-liners for guard statements.
+
+ <details>
+
+ ```swift
+ // WRONG
+ guard let thingOne = thingOne else { return }
+
+ // RIGHT
+ guard let thingOne = thingOne else {
+     return
+ }
+ ```
+
+ </details>
 
 * <a id='guards-at-top'></a>(<a href='#guards-at-top'>link</a>) **Prefer using `guard` at the beginning of a scope.**
 
@@ -823,6 +1053,33 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L] All constants that are instance-independent should be static. All such static constants should be placed in a marked section of their class, struct, or enum. For classes with many constants, you should group constants that have similar or the same prefixes, suffixes and/or use cases.
+
+ <details>
+
+ ```swift
+ // WRONG
+ class MyClassName {
+     // Don't use `k`-prefix
+     static let kButtonPadding: CGFloat = 20.0
+ 
+     // Don't namespace constants
+     enum Constant {
+         static let indianaPi = 3
+     }
+ }
+ 
+ // RIGHT    
+ class MyClassName {
+     // MARK: - Constants
+     static let buttonPadding: CGFloat = 20.0
+     static let indianaPi = 3
+     static let shared = MyClassName()
+ }
+ ```
+
+ </details>
+
 * <a id='auto-enum-values'></a>(<a href='#auto-enum-values'>link</a>) **Use Swift's automatic enum values unless they map to an external source.** Add a comment explaining why explicit values are defined. [![SwiftLint: redundant_string_enum_value](https://img.shields.io/badge/SwiftLint-redundant__string__enum__value-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#redundant-string-enum-value)
 
   <details>
@@ -900,7 +1157,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * <a id='semantic-optionals'></a>(<a href='#semantic-optionals'>link</a>) **Use optionals only when they have semantic meaning.**
 
-* <a id='prefer-immutable-values'></a>(<a href='#prefer-immutable-values'>link</a>) **Prefer immutable values whenever possible.** Use `map` and `compactMap` instead of appending to a new collection. Use `filter` instead of removing elements from a mutable collection.
+* <a id='prefer-immutable-values'></a>(<a href='#prefer-immutable-values'>link</a>) **Prefer immutable values whenever possible.** Use `map` and `compactMap` instead of appending to a new collection. Use `filter` instead of removing elements from a mutable collection. [L] Make sure to avoid using closures that have side effects when using these methods.
 
   <details>
 
@@ -1008,6 +1265,12 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L]  If you have a function that takes no arguments, has no side effects, and returns some object or value, prefer using a computed property instead.
+
+* [L] Prefer let to var whenever possible.
+
+* [L] When writing methods, keep in mind whether the method is intended to be overridden or not. If not, mark it as final, though keep in mind that this will prevent the method from being overwritten for testing purposes. In general, final methods result in improved compilation times, so it is good to use this when applicable. Be particularly careful, however, when applying the final keyword in a library since it is non-trivial to change something to be non-final in a library as opposed to have changing something to be non-final in your local project.
+
 * <a id='switch-never-default'></a>(<a href='#switch-never-default'>link</a>) **Never use the `default` case when `switch`ing over an enum.**
 
   <details>
@@ -1035,6 +1298,23 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [L] If you have a default case that shouldn't be reached, preferably throw an error (or handle it some other similar way such as asserting).
+
+ <details>
+
+ ```swift
+ func handleDigit(_ digit: Int) throws {
+     switch digit {
+     case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9:
+         print("Yes, \(digit) is a digit!")
+     default:
+         throw Error(message: "The given number was not a digit.")
+     }
+ }
+ ```
+
+ </details>
+
 * <a id='optional-nil-check'></a>(<a href='#optional-nil-check'>link</a>) **Check for nil rather than using optional binding if you don't need to use the value.** [![SwiftLint: unused_optional_binding](https://img.shields.io/badge/SwiftLint-unused_optional_binding-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#unused-optional-binding)
 
   <details>
@@ -1059,6 +1339,81 @@ _You can enable the following settings in Xcode by running [this script](resourc
   </details>
 
 **[⬆ back to top](#table-of-contents)**
+
+
+## [L] Error Handling
+
+Suppose a function myFunction is supposed to return a String, however, at some point it can run into an error. A common approach is to have this function return an optional String? where we return nil if something went wrong.
+
+Example:
+
+ ```swift
+ func readFile(named filename: String) -> String? {
+    guard let file = openFile(named: filename) else {
+        return nil
+    }
+ 
+    let fileContents = file.read()
+    file.close()
+    return fileContents
+ }
+ 
+ func printSomeFile() {
+    let filename = "somefile.txt"
+    guard let fileContents = readFile(named: filename) else {
+        print("Unable to open file \(filename).")
+        return
+    }
+    print(fileContents)
+ }
+ ```
+
+Instead, we should be using Swift's try/catch behavior when it is appropriate to know the reason for the failure.
+
+You can use a struct such as the following:
+
+ ```swift
+ struct Error: Swift.Error {
+    public let file: StaticString
+    public let function: StaticString
+    public let line: UInt
+    public let message: String
+ 
+    public init(message: String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+        self.file = file
+        self.function = function
+        self.line = line
+        self.message = message
+    }
+ }
+ ```
+ 
+ Example usage:
+ 
+ ```swift
+ func readFile(named filename: String) throws -> String {
+    guard let file = openFile(named: filename) else {
+        throw Error(message: "Unable to open file named \(filename).")
+    }
+ 
+    let fileContents = file.read()
+    file.close()
+    return fileContents
+ }
+ 
+ func printSomeFile() {
+    do {
+        let fileContents = try readFile(named: filename)
+        print(fileContents)
+    } catch {
+        print(error)
+    }
+ }
+ ```
+
+There are some exceptions in which it does make sense to use an optional as opposed to error handling. When the result should semantically potentially be nil as opposed to something going wrong while retrieving the result, it makes sense to return an optional instead of using error handling.
+
+In general, if a method can "fail", and the reason for the failure is not immediately obvious if using an optional return type, it probably makes sense for the method to throw an error.
 
 ## File Organization
 
