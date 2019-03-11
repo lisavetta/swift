@@ -1525,6 +1525,20 @@ In general, if a method can "fail", and the reason for the failure is not immedi
 
 **[⬆ back to top](#table-of-contents)**
 
+## Common best practices
+
+* Do not use print/debugPrint as they are logging in release builds too. Use loggers instead.
+
+* Use R.swift for the resources management.
+
+* Create readme.md for each project.
+
+* Localize strings.
+
+* Do not use targets for parameters (e.g. base URL) configuration. You can use configurations instead.
+
+* Do not use forks from your personal account. If you need to create a fork use company's account and explain your desicion in readme.md.
+
 ## Contributors
 
   - [View Contributors](https://github.com/airbnb/swift/graphs/contributors)
