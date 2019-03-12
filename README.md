@@ -58,6 +58,8 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] Always leave a space after //.
 
+* [RW] Avoid the use of C-style comments (/* ... */). Prefer the use of double- or triple-slash.
+
 **[⬆ back to top](#table-of-contents)**
 
 ## Naming
@@ -303,10 +305,20 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+  
+* [RW] Preferring to name the first parameter instead of including its name in the method name, except as mentioned under Delegates 
+
+* [RW] Taking advantage of default parameters
+
+* [RW] Generic type parameters should be descriptive, upper camel case names. When a type name doesn't have a meaningful relationship or role, use a traditional single uppercase letter such as T, U, or V.
+
+* [RW] Use US English spelling to match Apple's API.
 
 **[⬆ back to top](#table-of-contents)**
 
 ## Style
+
+* [RW] Unused (dead) code, including Xcode template code and placeholder comments should be removed.
 
 * <a id='use-implicit-types'></a>(<a href='#use-implicit-types'>link</a>) **Don't include types where they can be easily inferred.**
 
@@ -877,6 +889,44 @@ _You can enable the following settings in Xcode by running [this script](resourc
   ```
 
   </details>
+  
+* [RW] Use guard let self = self to unwrap weak self in closures
+
+* [RW] Code (even non-production, tutorial demo code) should not create reference cycles. Analyze your object graph and prevent strong cycles with weak and unowned references. Alternatively, use value types (struct, enum) to prevent cycles altogether. Extend object lifetime using the [weak self] and guard let self = self else { return } idiom. [weak self] is preferred to [unowned self] where it is not immediately obvious that self outlives the closure. Explicitly extending lifetime is preferred to optional chaining.
+ 
+  <details>
+  
+  ```swift
+  // Preferred
+  
+  resource.request().onComplete { [weak self] response in
+      guard let self = self else {
+          return
+      }
+      let model = self.updateModel(response)
+      self.updateUI(model)
+  }
+  
+  // Not Preferred
+  
+  // might crash if self is released before response returns
+  resource.request().onComplete { [unowned self] response in
+      let model = self.updateModel(response)
+          self.updateUI(model)
+      }
+  
+  // Not Preferred
+  
+  // deallocate could happen between updating the model and updating UI
+  resource.request().onComplete { [weak self] response in
+      let model = self?.updateModel(response)
+      self?.updateUI(model)
+  }
+  ```
+  
+  </details>
+  
+* [RW] Ternary Operator. The Ternary operator, ?: , should only be used when it increases clarity or code neatness. A single condition is usually all that should be evaluated. Evaluating multiple conditions is usually more understandable as an if statement or refactored into instance variables. In general, the best use of the ternary operator is during assignment of a variable and deciding which value to use.
 
 * [L] In general, we prefer to use an "early return" strategy where applicable as opposed to nesting code in if statements. Using guard statements for this use-case is often helpful and can improve the readability of the code.
 
@@ -1289,6 +1339,8 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] When writing methods, keep in mind whether the method is intended to be overridden or not. If not, mark it as final, though keep in mind that this will prevent the method from being overwritten for testing purposes. In general, final methods result in improved compilation times, so it is good to use this when applicable. Be particularly careful, however, when applying the final keyword in a library since it is non-trivial to change something to be non-final in a library as opposed to have changing something to be non-final in your local project.
 
+* [RW] Static methods and type properties work similarly to global functions and global variables and should be used sparingly. They are useful when functionality is scoped to a particular type or when Objective-C interoperability is required.
+
 * <a id='switch-never-default'></a>(<a href='#switch-never-default'>link</a>) **Never use the `default` case when `switch`ing over an enum.**
 
   <details>
@@ -1367,6 +1419,41 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* [RW] Lazy Initialization. Consider using lazy initialization for finer grained control over object lifetime. 
+
+  <details> 
+  This is especially true for UIViewController that loads views lazily. You can either use a closure that is immediately called { }() or call a private factory method. Example:
+  
+  ```swift
+  lazy var locationManager = makeLocationManager()
+  
+  private func makeLocationManager() -> CLLocationManager {
+      let manager = CLLocationManager()
+      manager.desiredAccuracy = kCLLocationAccuracyBest
+      manager.delegate = self
+      manager.requestAlwaysAuthorization()
+      return manager
+  }
+  ```  
+  
+  </details>
+  
+* [RW] Multi-line String Literals. When building a long string literal, you're encouraged to use the multi-line string literal syntax. Open the literal on the same line as the assignment but do not include text on that line. Indent the text block one additional level.
+
+  <details>
+  
+  ```swift
+  let message = """
+      You cannot charge the flux \
+      capacitor with a 9V battery.
+      You must use a super-charger \
+      which costs 10 credits. You currently \
+      have \(credits) credits available.
+  """
+  ```
+  
+  </details>
+  
 **[⬆ back to top](#table-of-contents)**
 
 ## [L] Error Handling
@@ -1444,6 +1531,8 @@ There are some exceptions in which it does make sense to use an optional as oppo
 In general, if a method can "fail", and the reason for the failure is not immediately obvious if using an optional return type, it probably makes sense for the method to throw an error.
 
 ## File Organization
+
+* [RW] Import only the modules a source file requires. For example, don't import UIKit when importing Foundation will suffice. Likewise, don't import Foundation if you must import UIKit.
 
 * <a id='alphabetize-imports'></a>(<a href='#alphabetize-imports'>link</a>) **Alphabetize module imports at the top of the file a single line below the last line of the header comments. Do not add additional line breaks between import statements.** [![SwiftFormat: sortedImports](https://img.shields.io/badge/SwiftFormat-sortedImports-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#sortedImports)
 
@@ -1543,6 +1632,8 @@ In general, if a method can "fail", and the reason for the failure is not immedi
   </details>
 
 * [Google] Extensions can be used to organize functionality of a type across multiple “units.” As with member order, the organizational structure/grouping you choose can have a great effect on readability; you must use some logical organizational structure that you could explain to a reviewer if asked.
+
+* [RW] In particular, when adding protocol conformance to a model, prefer adding a separate extension for the protocol methods. This keeps the related methods grouped together with the protocol and can simplify instructions to add a protocol to a class with its associated methods. For UIKit view controllers, consider grouping lifecycle, custom accessors, and IBAction in separate class extensions.
 
 * [Google] Line-Wrapping. (Large chapter in https://google.github.io/swift/)
 
