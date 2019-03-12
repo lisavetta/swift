@@ -276,33 +276,33 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] As per Apple's API Design Guidelines, a protocol should be named as nouns if they describe what something is doing (e.g. Collection) and using the suffixes able, ible, or ing if it describes a capability (e.g. Equatable, ProgressReporting). If neither of those options makes sense for your use case, you can add a Protocol suffix to the protocol's name as well. Some example protocols are below.
 
- <details>
+  <details>
 
- ```swift
- // here, the name is a noun that describes what the protocol does
- protocol TableViewSectionProvider {
- func rowHeight(at row: Int) -> CGFloat
-     var numberOfRows: Int { get }
-     /* ... */
- }
+  ```swift
+  // here, the name is a noun that describes what the protocol does
+  protocol TableViewSectionProvider {
+  func rowHeight(at row: Int) -> CGFloat
+      var numberOfRows: Int { get }
+      /* ... */
+  }
 
- // here, the protocol is a capability, and we name it appropriately
- protocol Loggable {
- func logCurrentState()
-     /* ... */
- }
+  // here, the protocol is a capability, and we name it appropriately
+  protocol Loggable {
+  func logCurrentState()
+      /* ... */
+  }
 
- // suppose we have an `InputTextView` class, but we also want a protocol
- // to generalize some of the functionality - it might be appropriate to
- // use the `Protocol` suffix here
- protocol InputTextViewProtocol {
-    func sendTrackingEvent()
-    func inputText() -> String
-    /* ... */
- }
- ```
+  // suppose we have an `InputTextView` class, but we also want a protocol
+  // to generalize some of the functionality - it might be appropriate to
+  // use the `Protocol` suffix here
+  protocol InputTextViewProtocol {
+      func sendTrackingEvent()
+      func inputText() -> String
+      /* ... */
+  }
+  ```
 
-</details>
+  </details>
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -379,26 +379,26 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] Prefer using local constants or other mitigation techniques to avoid multi-line predicates where possible.
 
-<details>
+  <details>
 
- ```swift
- // WRONG
- if x == firstReallyReallyLongPredicateFunction()
-     && y == secondReallyReallyLongPredicateFunction()
-     && z == thirdReallyReallyLongPredicateFunction() {
-     // do something
- }
+  ```swift
+  // WRONG
+  if x == firstReallyReallyLongPredicateFunction()
+      && y == secondReallyReallyLongPredicateFunction()
+      && z == thirdReallyReallyLongPredicateFunction() {
+      // do something
+  }
 
- // RIGHT
- let firstCondition = x == firstReallyReallyLongPredicateFunction()
- let secondCondition = y == secondReallyReallyLongPredicateFunction()
- let thirdCondition = z == thirdReallyReallyLongPredicateFunction()
- if firstCondition && secondCondition && thirdCondition {
-     // do something
- }
- ```
+  // RIGHT
+  let firstCondition = x == firstReallyReallyLongPredicateFunction()
+  let secondCondition = y == secondReallyReallyLongPredicateFunction()
+  let thirdCondition = z == thirdReallyReallyLongPredicateFunction()
+  if firstCondition && secondCondition && thirdCondition {
+      // do something
+  }
+  ```
 
- </details>
+  </details>
 
 * <a id='trailing-comma-array'></a>(<a href='#trailing-comma-array'>link</a>) **Add a trailing comma on the last element of a multi-line array.** [![SwiftFormat: trailingCommas](https://img.shields.io/badge/SwiftFormat-trailingCommas-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#trailingCommas)
 
@@ -614,16 +614,16 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] When calling a function that has many parameters, put each argument on a separate line with a single extra indentation.
 
- <details>
+  <details>
 
- ```swift
- someFunctionWithManyArguments(
-     firstArgument: "Hello, I am a string",
-     secondArgument: resultFromSomeFunction(),
-     thirdArgument: someOtherLocalProperty)
- ```
+  ```swift
+  someFunctionWithManyArguments(
+      firstArgument: "Hello, I am a string",
+      secondArgument: resultFromSomeFunction(),
+      thirdArgument: someOtherLocalProperty)
+  ```
 
- </details>
+  </details>
 
 ### Closures
 
@@ -683,44 +683,44 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] If the types of the parameters are obvious, it is OK to omit the type name, but being explicit is also OK. Sometimes readability is enhanced by adding clarifying detail and sometimes by taking repetitive parts away - use your best judgment and be consistent.
 
- <details>
+  <details>
 
- ```swift
- // omitting the type
- doSomethingWithClosure() { response in
-     print(response)
- }
+  ```swift
+  // omitting the type
+  doSomethingWithClosure() { response in
+      print(response)
+  }
  
- // explicit type
- doSomethingWithClosure() { response: NSURLResponse in
-     print(response)
- }
+  // explicit type
+  doSomethingWithClosure() { response: NSURLResponse in
+      print(response)
+  }
  
- // using shorthand in a map statement
- [1, 2, 3].flatMap { String($0) }
- ```
+  // using shorthand in a map statement
+  [1, 2, 3].flatMap { String($0) }
+  ```
  
- </details>
+  </details>
 
 * [L] Use trailing closure syntax unless the meaning of the closure is not obvious without the parameter name (an example of this could be if a method has parameters for success and failure closures).
 
- <details>
+  <details>
 
- ```swift
- // trailing closure
- doSomething(1.0) { (parameter1) in
-     print("Parameter 1 is \(parameter1)")
- }
+  ```swift
+  // trailing closure
+  doSomething(1.0) { parameter1 in
+      print("Parameter 1 is \(parameter1)")
+  }
 
- // no trailing closure
- doSomething(1.0, success: { (parameter1) in
-     print("Success with \(parameter1)")
- }, failure: { (parameter1) in
-     print("Failure with \(parameter1)")
- })
- ```
+  // no trailing closure
+  doSomething(1.0, success: { parameter1 in
+      print("Success with \(parameter1)")
+  }, failure: { parameter1 in
+      print("Failure with \(parameter1)")
+  })
+  ```
 
- </details>
+  </details>
 
 ### Operators
 
@@ -828,18 +828,18 @@ _You can enable the following settings in Xcode by running [this script](resourc
   
 * [L] If making a read-only, computed property, provide the getter without the get {} around it.
 
- <details>
+  <details>
 
- ```swift
- var computedProperty: String {
-     if someBool {
-         return "I'm a mighty pirate!"
-     }
-     return "I'm selling these fine leather jackets."
- }
- ```
+  ```swift
+  var computedProperty: String {
+      if someBool {
+          return "I'm a mighty pirate!"
+      }
+      return "I'm selling these fine leather jackets."
+  }
+  ```
 
- </details>
+  </details>
 
 * <a id='complex-callback-block'></a>(<a href='#complex-callback-block'>link</a>) **Extract complex callback blocks into methods**. This limits the complexity introduced by weak-self in blocks and reduces nestedness. If you need to reference self in the method call, make use of `guard` to unwrap self for the duration of the callback.
 
@@ -884,105 +884,105 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] When deciding between using an if statement or a guard statement when unwrapping optionals is not involved, the most important thing to keep in mind is the readability of the code. There are many possible cases here, such as depending on two different booleans, a complicated logical statement involving multiple comparisons, etc., so in general, use your best judgement to write code that is readable and consistent. If you are unsure whether guard or if is more readable or they seem equally readable, prefer using guard.
 
- <details>
+  <details>
 
- ```swift
- // an `if` statement is readable here
- if operationFailed {
-     return
- }
+  ```swift
+  // an `if` statement is readable here
+  if operationFailed {
+      return
+  }
  
- // a `guard` statement is readable here
- guard isSuccessful else {
-     return
- }
+  // a `guard` statement is readable here
+  guard isSuccessful else {
+      return
+  }
  
- // double negative logic like this can get hard to read - i.e. don't do this
- guard !operationFailed else {
-     return
- }
- ```
+  // double negative logic like this can get hard to read - i.e. don't do this
+  guard !operationFailed else {
+      return
+  }
+  ```
 
- </details>
+  </details>
 
 * [L] If choosing between two different states, it makes more sense to use an if statement as opposed to a guard statement.
 
- <details>
+  <details>
 
- ```swift
- // WRONG
- guard isFriendly else {
-     print("You have the manners of a beggar.")
-     return
- }
+  ```swift
+  // WRONG
+  guard isFriendly else {
+      print("You have the manners of a beggar.")
+      return
+  }
 
- print("Hello, nice to meet you!")
+  print("Hello, nice to meet you!")
  
- // RIGHT
- if isFriendly {
-     print("Hello, nice to meet you!")
- } else {
-     print("You have the manners of a beggar.")
- }
- ```
+  // RIGHT
+  if isFriendly {
+      print("Hello, nice to meet you!")
+  } else {
+      print("You have the manners of a beggar.")
+  }
+  ```
 
- </details>
+  </details>
 
 * [Google] for-where Loops. When the entirety of a for loop’s body would be a single if block testing a condition of the element, the test is placed in the where clause of the for statement instead.
  
- <details>
+  <details>
  
- ```swift
- for item in collection where item.hasProperty {
-     // ...
- }
- ```
+  ```swift
+  for item in collection where item.hasProperty {
+      // ...
+  }
+  ```
  
- </details>
+  </details>
 
 * [L] Often, we can run into a situation in which we need to unwrap multiple optionals using guard statements. In general, combine unwraps into a single guard statement if handling the failure of each unwrap is identical (e.g. just a return, break, continue, throw, or some other @noescape).
 
- <details>
+  <details>
 
- ```swift
- // combined because we just return
- guard let thingOne = thingOne,
-     let thingTwo = thingTwo,
-     let thingThree = thingThree else {
-     return
- }
+  ```swift
+  // combined because we just return
+  guard let thingOne = thingOne,
+      let thingTwo = thingTwo,
+      let thingThree = thingThree else {
+      return
+  }
 
- // separate statements because we handle a specific error in each case
- guard let thingOne = thingOne else {
-     throw Error(message: "Unwrapping thingOne failed.")
- }
+  // separate statements because we handle a specific error in each case
+  guard let thingOne = thingOne else {
+      throw Error(message: "Unwrapping thingOne failed.")
+  }
 
- guard let thingTwo = thingTwo else {
-     throw Error(message: "Unwrapping thingTwo failed.")
- }
+  guard let thingTwo = thingTwo else {
+      throw Error(message: "Unwrapping thingTwo failed.")
+  }
 
- guard let thingThree = thingThree else {
-     throw Error(message: "Unwrapping thingThree failed.")
- }
- ```
+  guard let thingThree = thingThree else {
+      throw Error(message: "Unwrapping thingThree failed.")
+  }
+  ```
 
- </details>
+  </details>
 
 * [L] Don’t use one-liners for guard statements.
 
- <details>
+  <details>
 
- ```swift
- // WRONG
- guard let thingOne = thingOne else { return }
+  ```swift
+  // WRONG
+  guard let thingOne = thingOne else { return }
 
- // RIGHT
- guard let thingOne = thingOne else {
-     return
- }
- ```
+  // RIGHT
+  guard let thingOne = thingOne else {
+      return
+  }
+  ```
 
- </details>
+  </details>
 
 * <a id='guards-at-top'></a>(<a href='#guards-at-top'>link</a>) **Prefer using `guard` at the beginning of a scope.**
 
@@ -995,10 +995,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * <a id='limit-access-control'></a>(<a href='#limit-access-control'>link</a>) **Access control should be at the strictest level possible.** Prefer `public` to `open` and `private` to `fileprivate` unless you need that behavior.
 
-* [Google] Access Levels
- Omitting an explicit access level is permitted on declarations. For top-level declarations, the default access level is internal. For nested declarations, the default access level is the lesser of internal and the access level of the enclosing declaration.
-
- Specifying an explicit access level at the file level on an extension is forbidden. Each member of the extension has its access level specified if it is different than the default.
+* [Google] Access Levels. Omitting an explicit access level is permitted on declarations. For top-level declarations, the default access level is internal. For nested declarations, the default access level is the lesser of internal and the access level of the enclosing declaration. Specifying an explicit access level at the file level on an extension is forbidden. Each member of the extension has its access level specified if it is different than the default.
 
 * <a id='avoid-global-functions'></a>(<a href='#avoid-global-functions'>link</a>) **Avoid global functions whenever possible.** Prefer methods within type definitions.
 
@@ -1074,30 +1071,30 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] All constants that are instance-independent should be static. All such static constants should be placed in a marked section of their class, struct, or enum. For classes with many constants, you should group constants that have similar or the same prefixes, suffixes and/or use cases.
 
- <details>
+  <details>
 
- ```swift
- // WRONG
- class MyClassName {
-     // Don't use `k`-prefix
-     static let kButtonPadding: CGFloat = 20.0
+  ```swift
+  // WRONG
+  class MyClassName {
+      // Don't use `k`-prefix
+      static let kButtonPadding: CGFloat = 20.0
  
-     // Don't namespace constants
-     enum Constant {
-         static let indianaPi = 3
-     }
- }
+      // Don't namespace constants
+      enum Constant {
+          static let indianaPi = 3
+      }
+  }
  
- // RIGHT    
- class MyClassName {
-     // MARK: - Constants
-     static let buttonPadding: CGFloat = 20.0
-     static let indianaPi = 3
-     static let shared = MyClassName()
- }
- ```
+  // RIGHT    
+  class MyClassName {
+      // MARK: - Constants
+      static let buttonPadding: CGFloat = 20.0
+      static let indianaPi = 3
+      static let shared = MyClassName()
+  }
+  ```
 
- </details>
+  </details>
 
 * <a id='auto-enum-values'></a>(<a href='#auto-enum-values'>link</a>) **Use Swift's automatic enum values unless they map to an external source.** Add a comment explaining why explicit values are defined. [![SwiftLint: redundant_string_enum_value](https://img.shields.io/badge/SwiftLint-redundant__string__enum__value-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#redundant-string-enum-value)
 
@@ -1174,9 +1171,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
   
-* [Google] fallthrough in switch Statements. When multiple cases of a switch would execute the same statements, the case patterns are combined into ranges or comma-delimited lists. Multiple case statements that do nothing but fallthrough to a case below are not allowed.
-
-* [Google] 
+* [Google] Do not use fallthrough in switch Statements. When multiple cases of a switch would execute the same statements, the case patterns are combined into ranges or comma-delimited lists. Multiple case statements that do nothing but fallthrough to a case below are not allowed.
 
 * <a id='semantic-optionals'></a>(<a href='#semantic-optionals'>link</a>) **Use optionals only when they have semantic meaning.**
 
@@ -1323,20 +1318,20 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [L] If you have a default case that shouldn't be reached, preferably throw an error (or handle it some other similar way such as asserting).
 
- <details>
+  <details>
 
- ```swift
- func handleDigit(_ digit: Int) throws {
-     switch digit {
-     case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9:
-         print("Yes, \(digit) is a digit!")
-     default:
-         throw Error(message: "The given number was not a digit.")
-     }
- }
- ```
+  ```swift
+  func handleDigit(_ digit: Int) throws {
+      switch digit {
+      case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9:
+          print("Yes, \(digit) is a digit!")
+      default:
+          throw Error(message: "The given number was not a digit.")
+      }
+  }
+  ```
 
- </details>
+  </details>
 
 * <a id='optional-nil-check'></a>(<a href='#optional-nil-check'>link</a>) **Check for nil rather than using optional binding if you don't need to use the value.** [![SwiftLint: unused_optional_binding](https://img.shields.io/badge/SwiftLint-unused_optional_binding-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#unused-optional-binding)
 
@@ -1363,17 +1358,16 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [Github] Prefer structs over classes.
 
- <details>
- Unless you require functionality that can only be provided by a class (like identity or deinitializers), implement a struct instead.
+  <details>
+  Unless you require functionality that can only be provided by a class (like identity or deinitializers), implement a struct instead.
 
- Note that inheritance is (by itself) usually not a good reason to use classes, because polymorphism can be provided by protocols, and implementation reuse can be provided through composition.
+  Note that inheritance is (by itself) usually not a good reason to use classes, because polymorphism can be provided by protocols, and implementation reuse can be provided through composition.
 
- Rationale: Value types are simpler, easier to reason about, and behave as expected with the let keyword.
+  Rationale: Value types are simpler, easier to reason about, and behave as expected with the let keyword.
 
- </details>
+  </details>
 
 **[⬆ back to top](#table-of-contents)**
-
 
 ## [L] Error Handling
 
@@ -1519,110 +1513,104 @@ In general, if a method can "fail", and the reason for the failure is not immedi
 
 * [Google] When deciding on the logical order of members, it can be helpful for readers and future writers (including yourself) to use // MARK: comments to provide descriptions for that grouping. These comments are also interpreted by Xcode and provide bookmarks in the source window’s navigation bar. (Likewise, // MARK: - , written with a hyphen before the description, causes Xcode to insert a divider before the menu item.) 
 
- <details>
+  <details>
 
- ```swift
- class MovieRatingViewController: UITableViewController {
+  ```swift
+  class MovieRatingViewController: UITableViewController {
 
-    // MARK: - View controller lifecycle methods
+      // MARK: - View controller lifecycle methods
  
-    override func viewDidLoad() {
-        // ...
-    }
+      override func viewDidLoad() {
+          // ...
+      }
  
-    override func viewWillAppear(_ animated: Bool) {
-        // ...
-    }
+      override func viewWillAppear(_ animated: Bool) {
+          // ...
+      }
  
-    // MARK: - Movie rating manipulation methods
+      // MARK: - Movie rating manipulation methods
  
-    @objc private func ratingStarWasTapped(_ sender: UIButton?) {
-        // ...
-    }
+      @objc private func ratingStarWasTapped(_ sender: UIButton?) {
+          // ...
+      }
  
-    @objc private func criticReviewWasTapped(_ sender: UIButton?) {
-        // ...
-    }
- }
- ```
+      @objc private func criticReviewWasTapped(_ sender: UIButton?) {
+          // ...
+      }
+  }
+  ```
 
-</details>
+  </details>
 
 * [Google] Extensions can be used to organize functionality of a type across multiple “units.” As with member order, the organizational structure/grouping you choose can have a great effect on readability; you must use some logical organizational structure that you could explain to a reviewer if asked.
 
 * [Google] Line-Wrapping. (Large chapter in https://google.github.io/swift/)
 
- <details>
+  <details>
  
- * If the entire declaration, statement, or expression fits on one line, then do that.
- * Comma-delimited lists are only laid out in one direction: horizontally or vertically. In other words, all elements must fit on the same line, or each element must be on its own line. A horizontally-oriented list does not contain any line breaks, even before the first element or after the last element. Except in control flow statements, a vertically-oriented list contains a line break before the first element and after each element.
- * A continuation line starting with an unbreakable token sequence is indented at the same level as the original line.
- * A continuation line that is part of a vertically-oriented comma-delimited list is indented exactly +2 from the original line.
- * When an open curly brace ({) follows a line-wrapped declaration or expression, it is on the same line as the final continuation line unless that line is indented at +2 from the original line. In that case, the brace is placed on its own line, to avoid the continuation lines from blending visually with the body of the subsequent block.
+  * If the entire declaration, statement, or expression fits on one line, then do that.
+  * Comma-delimited lists are only laid out in one direction: horizontally or vertically. In other words, all elements must fit on the same line, or each element must be on its own line. A horizontally-oriented list does not contain any line breaks, even before the first element or after the last element. Except in control flow statements, a vertically-oriented list contains a line break before the first element and after each element.
+  * A continuation line starting with an unbreakable token sequence is indented at the same level as the original line.
+  * A continuation line that is part of a vertically-oriented comma-delimited list is indented exactly +2 from the original line.
+  * When an open curly brace ({) follows a line-wrapped declaration or expression, it is on the same line as the final continuation line unless that line is indented at +2 from the original line. In that case, the brace is placed on its own line, to avoid the continuation lines from blending visually with the body of the subsequent block.
 
- ```swift
- // WRONG
- public func index<Elements: Collection, Element>(
-     of element: Element,
-     in collection: Elements
- ) -> Elements.Index?
- where
-     Elements.Element == Element,
-     Element: Equatable {  // AVOID.
-     for current in elements {
-         // ...
-     }
- }
- // RIGHT
- public func index<Elements: Collection, Element>(
-     of element: Element,
-     in collection: Elements
- ) -> Elements.Index?
- where
-     Elements.Element == Element,
-     Element: Equatable
- {  // GOOD.
-     for current in elements {
-         // ...
-     }
- }
- ```
+  ```swift
+  // WRONG
+  public func index<Elements: Collection, Element>(
+      of element: Element,
+      in collection: Elements
+  ) -> Elements.Index?
+  where
+      Elements.Element == Element,
+      Element: Equatable {  // AVOID.
+      for current in elements {
+          // ...
+      }
+  }
+  // RIGHT
+  public func index<Elements: Collection, Element>(
+      of element: Element,
+      in collection: Elements
+  ) -> Elements.Index?
+  where
+      Elements.Element == Element,
+      Element: Equatable
+  {  // GOOD.
+      for current in elements {
+          // ...
+      }
+  }
+  ```
  
- For declarations that contain a where clause followed by generic constraints, additional rules apply:
+  For declarations that contain a where clause followed by generic constraints, additional rules apply:
  
- * If the generic constraint list exceeds the column limit when placed on the same line as the return type, then a line break is first inserted before the where keyword and the where keyword is indented at the same level as the original line.
- * If the generic constraint list still exceeds the column limit after inserting the line break above, then the constraint list is oriented vertically with a line break after the where keyword and a line break after the final constraint.
+  * If the generic constraint list exceeds the column limit when placed on the same line as the return type, then a line break is first inserted before the where keyword and the where keyword is indented at the same level as the original line.
+  * If the generic constraint list still exceeds the column limit after inserting the line break above, then the constraint list is oriented vertically with a line break after the where keyword and a line break after the final constraint.
  
- This line-wrapping style ensures that the different parts of a declaration are quickly and easily identifiable to the reader by using indentation and line breaks, while also preserving the same indentation level for those parts throughout the file. 
+  This line-wrapping style ensures that the different parts of a declaration are quickly and easily identifiable to the reader by using indentation and line breaks, while also preserving the same indentation level for those parts throughout the file. 
  
- * Control Flow Statements
+  * Control Flow Statements
  
    When a control flow statement (such as if, guard, while, or for) is wrapped, the first continuation line is indented to the same position as the token following the control flow keyword. Additional continuation lines are indented at that same position if they are syntactically parallel elements, or in +2 increments from that position if they are syntactically nested.
  
-   The open brace ({) preceding the body of the control flow statement can either be placed on the same line as the last continuation line or on the next line, at the same indentation level as the beginning of the statement. For guard statements, the else { must be kept together, either on the same line or on the next line.
+    The open brace ({) preceding the body of the control flow statement can either be placed on the same line as the last continuation line or on the next line, at the same indentation level as the beginning of the statement. For guard statements, the else { must be kept together, either on the same line or on the next line.
  
- ```swift
- if aBooleanValueReturnedByAVeryLongOptionalThing() &&
-    aDifferentBooleanValueReturnedByAVeryLongOptionalThing() &&
-    yetAnotherBooleanValueThatContributesToTheWrapping() {
-    doSomething()
- }
+    ```swift
+   if aBooleanValueReturnedByAVeryLongOptionalThing() &&
+       aDifferentBooleanValueReturnedByAVeryLongOptionalThing() &&
+       yetAnotherBooleanValueThatContributesToTheWrapping() {
+       doSomething()
+   }
  
- guard let value = aValueReturnedByAVeryLongOptionalThing(),
+   guard let value = aValueReturnedByAVeryLongOptionalThing(),
        let value2 = aDifferentValueReturnedByAVeryLongOptionalThing() else {
-     doSomething()
- }
- ```
+       doSomething()
+   }
+   ```
  
- </details>
+  </details>
  
- * [Google] Horizontal whitespace
- 
- <details>
- 
- A large chapter in https://google.github.io/swift/
- 
- </details>
+ * [Google] Horizontal whitespace (A large chapter in https://google.github.io/swift/)
 
 **[⬆ back to top](#table-of-contents)**
 
