@@ -48,7 +48,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
-* <a id='spaces-over-tabs'></a>(<a href='#spaces-over-tabs'>link</a>) **Use 2 spaces to indent lines.**
+* <a id='spaces-over-tabs'></a>(<a href='#spaces-over-tabs'>link</a>) **Use 4 spaces to indent lines.**
 
 * <a id='trailing-whitespace'></a>(<a href='#trailing-whitespace'>link</a>) **Trim trailing whitespace in all lines.** [![SwiftFormat: trailingSpace](https://img.shields.io/badge/SwiftFormat-trailingSpace-7B0051.svg)](https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md#trailingSpace)
 
@@ -389,23 +389,19 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
-* [L] Prefer using local constants or other mitigation techniques to avoid multi-line predicates where possible.
+* [L] Prefer using local constants or other mitigation techniques to avoid multi-line predicates when an expression requires cumputation or in other words is hard to get.
 
   <details>
 
   ```swift
   // WRONG
-  if x == firstReallyReallyLongPredicateFunction()
-      && y == secondReallyReallyLongPredicateFunction()
-      && z == thirdReallyReallyLongPredicateFunction() {
+  if someArray.map { $0.boolValue }.filter { !$0 }.count > 0 {
       // do something
   }
 
   // RIGHT
-  let firstCondition = x == firstReallyReallyLongPredicateFunction()
-  let secondCondition = y == secondReallyReallyLongPredicateFunction()
-  let thirdCondition = z == thirdReallyReallyLongPredicateFunction()
-  if firstCondition && secondCondition && thirdCondition {
+  let filteredArray = someArray.map { $0.boolValue }.filter { !$0 }
+  if filteredArray.count > 0 {
       // do something
   }
   ```
@@ -604,6 +600,8 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
+* When declaring CGFloat/Float/Double values specify .0 explicitly. 
+
 ### Functions
 
 * <a id='omit-function-void-return'></a>(<a href='#omit-function-void-return'>link</a>) **Omit `Void` return types from function definitions.** [![SwiftLint: redundant_void_return](https://img.shields.io/badge/SwiftLint-redundant__void__return-007A87.svg)](https://github.com/realm/SwiftLint/blob/master/Rules.md#redundant-void-return)
@@ -624,7 +622,7 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
   </details>
 
-* [L] When calling a function that has many parameters, put each argument on a separate line with a single extra indentation.
+* [L] When calling a function that has many parameters, put each argument on a separate line with a single extra indentation. It depends on the length of a signature and parameters count.
 
   <details>
 
@@ -1047,6 +1045,54 @@ _You can enable the following settings in Xcode by running [this script](resourc
 
 * [Google] Access Levels. Omitting an explicit access level is permitted on declarations. For top-level declarations, the default access level is internal. For nested declarations, the default access level is the lesser of internal and the access level of the enclosing declaration. Specifying an explicit access level at the file level on an extension is forbidden. Each member of the extension has its access level specified if it is different than the default.
 
+* Write the access modifier keyword first if it is needed. The access modifier keyword should not be on a line by itself - keep it inline with what it is describing.
+
+  <details>
+
+  ```swift
+  // WRONG
+  static private let myPrivateNumber: Int
+
+  open
+  class Pirate {
+      /* ... */
+  }
+  
+  // RIGHT
+  private static let myPrivateNumber: Int
+
+  open class Pirate {
+      /* ... */
+  }
+  ```
+
+  </details>
+
+* The only things that should come before access control are the static specifier or attributes such as @IBAction, @IBOutlet, @objc and @discardableResult.
+
+* @objc attribute is placed on a single line if it declares custom name.
+
+  <details>
+  ```swift
+  @objc(SwiftFoo)
+  class Foo { // inheriting from NSObject makes no difference in this case
+
+    @objc(postcardFromSwift)
+    class func postcard() -> String {
+        return "Postcard from Swift!"
+    }
+
+    @objc(getMailInSwift)
+    class func getMail() {
+        if let hello = NSBar.postcard() { // NSBar is an Obj-C class (see below)
+            println("Printed in Swift: \(hello)")
+        }
+    }
+  }
+  ```
+
+  </details>
+
 * <a id='avoid-global-functions'></a>(<a href='#avoid-global-functions'>link</a>) **Avoid global functions whenever possible.** Prefer methods within type definitions.
 
   <details>
@@ -1129,17 +1175,22 @@ _You can enable the following settings in Xcode by running [this script](resourc
       // Don't use `k`-prefix
       static let kButtonPadding: CGFloat = 20.0
  
-      // Don't namespace constants
-      enum Constant {
-          static let indianaPi = 3
-      }
+      // Constants without namespace
+      static let indianaPi = 3
+      static let bottomViewHeight: CGFloat = 60.0
   }
  
   // RIGHT    
   class MyClassName {
-      // MARK: - Constants
-      static let buttonPadding: CGFloat = 20.0
-      static let indianaPi = 3
+      
+      enum MathConstants {
+          static let indianaPi = 3
+      }
+
+      private enum LayoutConstants {
+          static let buttonPadding: CGFloat = 20.0
+      }
+
       static let shared = MyClassName()
   }
   ```
